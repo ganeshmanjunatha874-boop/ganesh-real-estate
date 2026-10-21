@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Ganesh Real Estate | Find Your Property{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="eyebrow">YOUR PROPERTY. YOUR FUTURE.</div>
+  <h1>{{ 'Find a place to call your own.' if current_language == 'en' else 'ನಿಮ್ಮ ಕನಸಿನ ಆಸ್ತಿಯನ್ನು ಹುಡುಕಿ.' }}</h1>
+  <p>{{ 'Discover homes, plots and commercial properties in your preferred location.' if current_language == 'en' else 'ನಿಮ್ಮ ಆಯ್ಕೆಯ ಸ್ಥಳದಲ್ಲಿ ಮನೆ, ನಿವೇಶನ ಮತ್ತು ವಾಣಿಜ್ಯ ಆಸ್ತಿಗಳನ್ನು ಹುಡುಕಿ.' }}</p>
+  <form class="search-box" method="get">
+    <input name="q" placeholder="{{ 'Enter location or property name' if current_language == 'en' else 'ಸ್ಥಳ ಅಥವಾ ಆಸ್ತಿ ಹೆಸರನ್ನು ನಮೂದಿಸಿ' }}" value="{{ request.args.get('q', '') }}">
+    <select name="type">
+      <option value="">{{ 'All property types' if current_language == 'en' else 'ಎಲ್ಲಾ ಆಸ್ತಿ ವಿಧಗಳು' }}</option>
+      {% for kind in property_types %}
+        <option value="{{ kind }}" {% if request.args.get('type') == kind %}selected{% endif %}>{{ kind }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">{{ 'Search properties' if current_language == 'en' else 'ಆಸ್ತಿ ಹುಡುಕಿ' }}</button>
+  </form>
+  <div class="hero-tags"><span>✓ Verified listings</span><span>✓ Local expertise</span><span>✓ Direct enquiries</span></div>
+</section>
+<section class="section-head">
+  <div><span class="eyebrow">EXPLORE</span><h2>{{ 'Featured properties' if current_language == 'en' else 'ಪ್ರಮುಖ ಆಸ್ತಿಗಳು' }}</h2></div>
+  {% if current_user.is_authenticated %}<a class="button secondary" href="{{ url_for('submit_property') }}">+ List a property</a>{% endif %}
+</section>
+<div class="property-grid">
+{% for p in properties %}
+  <article class="property-card">
+    <div class="property-image"><span class="property-type">{{ p.property_type }}</span><span class="house-icon">⌂</span></div>
+    <div class="property-body">
+      <p class="location">⌖ {{ p.location }}</p><h3>{{ p.title }}</h3>
+      <p class="price">₹{{ "{:,.0f}".format(p.price) }}</p>
+      <p class="description">{{ p.description[:125] }}</p>
+      <a class="button full" href="{{ url_for('property_detail', property_id=p.id) }}">View details →</a>
+    </div>
+  </article>
+{% else %}
+  <div class="empty-state"><span>⌂</span><h3>No properties found yet</h3><p>Try another search or check back soon.</p></div>
+{% endfor %}
+</div>
+{% endblock %}

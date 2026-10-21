@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ prop.title }} | Ganesh Real Estate{% endblock %}
+{% block content %}
+<div class="detail-wrap">
+  <span class="eyebrow">{{ prop.property_type }}</span><h1>{{ prop.title }}</h1>
+  <p class="location">⌖ {{ prop.location }}</p><p class="price detail-price">₹{{ "{:,.2f}".format(prop.price) }}</p>
+  <section class="form-card"><h2>About this property</h2><p>{{ prop.description }}</p>
+  {% if prop.status != 'approved' %}<p>Status: <strong>{{ prop.status }}</strong></p>{% endif %}</section>
+  <p>Contact Ganesh Real Estate to enquire about this property.</p>
+</div>
+{% endblock %}

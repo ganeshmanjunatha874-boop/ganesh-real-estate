@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Register | Ganesh Real Estate{% endblock %}
+{% block content %}
+<div class="form-wrap">
+  <span class="eyebrow">JOIN OUR COMMUNITY</span><h1>Create your account</h1>
+  <p>Register to submit and manage property listings.</p>
+  <form method="post" class="form-card">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Full name</label><input name="name" maxlength="120" required autocomplete="name">
+    <label>Email address</label><input type="email" name="email" maxlength="255" required autocomplete="email">
+    <label>Password (at least 10 characters)</label><input type="password" name="password" minlength="10" required autocomplete="new-password">
+    <button class="full" type="submit">Create account</button>
+  </form>
+  <p>Already registered? <a href="{{ url_for('login') }}">Sign in</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Listing Payment | Ganesh Real Estate{% endblock %}
+{% block content %}
+<div class="form-wrap">
+  <span class="eyebrow">SECURE CHECKOUT</span><h1>Publish your property listing</h1>
+  <div class="payment-summary"><p>Property: <strong>{{ prop.title }}</strong></p><p>One-time listing fee</p><div class="big-price">₹50.00</div></div>
+  {% if key_id and order %}
+    <p>Complete your payment using the secure Razorpay checkout.</p>
+    <button id="pay-button" class="full" type="button">Pay ₹50 securely</button><p id="payment-message" role="status"></p>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+      const options = {
+        key: {{ key_id|tojson }},
+        amount: {{ order.amount|tojson }},
+        currency: {{ order.currency|tojson }},
+        name: "Ganesh Real Estate",
+        description: "Property listing fee",
+        order_id: {{ order.id|tojson }},
+        handler: async function (response) {
+          const res = await fetch("{{ url_for('verify_payment') }}", {
+            method: "POST",
+            headers: {"Content-Type": "application/json", "X-CSRFToken": {{ csrf_token()|tojson }}},
+            body: JSON.stringify(response)
+          });
+          const data = await res.json();
+          document.getElementById("payment-message").textContent = data.message || data.error || "Payment verification failed.";
+          if (res.ok) window.location.href = "{{ url_for('property_detail', property_id=prop.id) }}";
+        },
+        theme: {color: "#102a43"}
+      };
+      document.getElementById("pay-button").addEventListener("click", () => new Razorpay(options).open());
+    </script>
+  {% else %}
+    <div class="notice info">Online payment is not configured. Copy .env.example to .env, add your Razorpay test credentials, then restart Flask. No payment has been taken.</div>
+  {% endif %}
+</div>
+{% endblock %}

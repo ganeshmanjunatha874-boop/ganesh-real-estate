@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}List a Property | Ganesh Real Estate{% endblock %}
+{% block content %}
+<div class="form-wrap wide">
+  <span class="eyebrow">SELL OR LIST YOUR PROPERTY</span><h1>Property details</h1>
+  <p>Customer listing fee: <strong>₹50 per property</strong>. Admin accounts are exempt.</p>
+  <form method="post" class="form-card">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Property title</label><input name="title" maxlength="160" required>
+    <label>Property type</label>
+    <select name="property_type" required>
+      {% for kind in property_types %}<option value="{{ kind }}">{{ kind }}</option>{% endfor %}
+    </select>
+    <label>Location</label><input name="location" maxlength="180" placeholder="e.g. Tumakuru, Karnataka" required>
+    <label>Expected price (₹)</label><input type="number" name="price" min="1" max="999999999999" step="0.01" required>
+    <label>Property description</label><textarea name="description" maxlength="5000" rows="5" required></textarea>
+    <button class="full" type="submit">Continue to payment — ₹50</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="{{ current_language }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102a43">
+  <title>{% block title %}Ganesh Real Estate{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="{{ url_for('index') }}">
+    <span class="brand-icon">G</span>
+    <span>Ganesh <small>REAL ESTATE</small></span>
+  </a>
+  <nav>
+    <a href="{{ url_for('index') }}">{{ 'Properties' if current_language == 'en' else 'ಆಸ್ತಿಗಳು' }}</a>
+    {% if current_user.is_authenticated %}
+      <a href="{{ url_for('submit_property') }}">{{ 'List property' if current_language == 'en' else 'ಆಸ್ತಿ ಸೇರಿಸಿ' }}</a>
+      {% if current_user.is_admin %}<a href="{{ url_for('admin') }}">Admin</a>{% endif %}
+      <form class="nav-form" method="post" action="{{ url_for('logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="link-button" type="submit">{{ 'Logout' if current_language == 'en' else 'ಲಾಗ್ ಔಟ್' }}</button>
+      </form>
+    {% else %}
+      <a href="{{ url_for('login') }}">{{ 'Login' if current_language == 'en' else 'ಲಾಗಿನ್' }}</a>
+      <a href="{{ url_for('register') }}" class="nav-cta">{{ 'Register' if current_language == 'en' else 'ನೋಂದಣಿ' }}</a>
+    {% endif %}
+    <span class="languages"><a href="{{ url_for('set_language', lang='en') }}">EN</a> / <a href="{{ url_for('set_language', lang='kn') }}">ಕನ್ನಡ</a></span>
+  </nav>
+</header>
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}<div class="notice {{ category }}">{{ message }}</div>{% endfor %}
+  {% endwith %}
+  {% if message is defined %}
+    <h1>{{ message }}</h1><a href="{{ url_for('index') }}">Home</a>
+  {% else %}
+    {% block content %}{% endblock %}
+  {% endif %}
+</main>
+<footer>© 2026 Ganesh Real Estate · Tumakuru, Karnataka</footer>
+</body>
+</html>
